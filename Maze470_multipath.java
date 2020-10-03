@@ -25,12 +25,14 @@ public class Maze470_multipath
 		maze=new int[MWIDTH][MHEIGHT];
 		crumbs=new boolean[MWIDTH][MHEIGHT];
 		//set each room to be surrounded by walls and not part of the maze
-		for (int i=0; i<MWIDTH; i++)
+		for (int i=0; i<MWIDTH; i++) 
+		{
 			for (int j=0; j<MHEIGHT; j++)
 			{
 				maze[i][j]=31;
 				crumbs[i][j]=false;
 			}
+		}
 
 		//generate the maze
 		makeMaze();
