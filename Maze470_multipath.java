@@ -259,6 +259,9 @@ public class Maze470_multipath
 		System.out.println("Done");
 	}
 
+	public static void doMazeGuided(int[] directions) {
+		// Do work here
+	}
 
 	public static class MazeComponent extends JComponent
 	{
