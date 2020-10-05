@@ -63,7 +63,8 @@ public class Maze470_multipath
         {
 		    new Thread(new Runnable(){
 			    public void run() {
-				    doMazeRandomWalk();
+					// doMazeRandomWalk();
+					doMazeGuided(new int[]{RIGHT, DOWN, DOWN});
 			    }
 		    }).start();
         }
@@ -260,7 +261,29 @@ public class Maze470_multipath
 	}
 
 	public static void doMazeGuided(int[] directions) {
-		// Do work here
+		
+		int x = robotX;
+		int y = robotY;
+
+		for (int direction : directions) {
+			
+			if((maze[x][y]&direction)==0)
+			{
+				if(direction==LEFT) robotX--;
+				if(direction==RIGHT) robotX++;
+				if(direction==UP) robotY--;
+				if(direction==DOWN) robotY++;
+			}
+
+			//leave a crumb
+			crumbs[x][y]=true;
+
+			//repaint and pause momentarily
+			mazecomp.repaint();
+			try{ Thread.sleep(SPEED); } catch(Exception e) { }
+		}
+
+		System.out.println("Done: doMazeGuided!");
 	}
 
 	public static class MazeComponent extends JComponent
