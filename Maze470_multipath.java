@@ -19,6 +19,22 @@ public class Maze470_multipath
 	//true means that a "crumb" is shown in the room
 	static boolean[][] crumbs;
 
+	private class State
+	{
+		public int x;
+		public int y;
+		public State parent;
+		public int mostRecentDirection;
+
+		public State(int x, int y, State parent, int mostRecentDirection)
+		{
+			this.x = x;
+			this.y = y;
+			this.parent = parent;
+			this.mostRecentDirection = mostRecentDirection;
+		} 
+	}
+
 	public static void main(String[] args)
 	{
 		//maze a maze array and a crumb array
