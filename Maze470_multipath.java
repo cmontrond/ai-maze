@@ -64,7 +64,7 @@ public class Maze470_multipath
 		    new Thread(new Runnable(){
 			    public void run() {
 					// doMazeRandomWalk();
-					doMazeGuided(new int[]{RIGHT, DOWN, DOWN});
+					doMazeGuided(new int[]{RIGHT, RIGHT, DOWN, DOWN, LEFT, DOWN});
 			    }
 		    }).start();
         }
@@ -261,13 +261,13 @@ public class Maze470_multipath
 	}
 
 	public static void doMazeGuided(int[] directions) {
-		
-		int x = robotX;
-		int y = robotY;
 
 		for (int direction : directions) {
+
+			int x = robotX;
+			int y = robotY;
 			
-			if((maze[x][y]&direction)==0)
+			if((maze[x][y]&direction)==0) // Makes sure we don't hit a wall
 			{
 				if(direction==LEFT) robotX--;
 				if(direction==RIGHT) robotX++;
