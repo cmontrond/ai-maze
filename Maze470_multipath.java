@@ -1,8 +1,25 @@
 import java.awt.*;
 import javax.swing.*;
+import java.util.*;
 
 public class Maze470_multipath
 {
+	private class State
+	{
+		public int x;
+		public int y;
+		public State parent;
+		public int mostRecentDirection;
+
+		public State(int x, int y, State parent, int mostRecentDirection)
+		{
+			this.x = x;
+			this.y = y;
+			this.parent = parent;
+			this.mostRecentDirection = mostRecentDirection;
+		}
+	}
+
 	public static final int MWIDTH=30,MHEIGHT=30,BLOCK=20;
 	public static boolean robotActive=true;
 	public static final int SPEED=100;
@@ -19,21 +36,7 @@ public class Maze470_multipath
 	//true means that a "crumb" is shown in the room
 	static boolean[][] crumbs;
 
-	private class State
-	{
-		public int x;
-		public int y;
-		public State parent;
-		public int mostRecentDirection;
-
-		public State(int x, int y, State parent, int mostRecentDirection)
-		{
-			this.x = x;
-			this.y = y;
-			this.parent = parent;
-			this.mostRecentDirection = mostRecentDirection;
-		} 
-	}
+	public static Stack<State> dfsStack;
 
 	public static void main(String[] args)
 	{
@@ -276,7 +279,8 @@ public class Maze470_multipath
 		System.out.println("Done");
 	}
 
-	public static void doMazeGuided(int[] directions) {
+	public static void doMazeGuided(int[] directions) 
+	{
 
 		for (int direction : directions) {
 
@@ -300,6 +304,11 @@ public class Maze470_multipath
 		}
 
 		System.out.println("Done: doMazeGuided!");
+	}
+
+	public static int[] getDfsDirections()
+	{
+
 	}
 
 	public static class MazeComponent extends JComponent
