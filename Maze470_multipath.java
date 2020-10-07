@@ -4,16 +4,22 @@ import java.util.*;
 
 public class Maze470_multipath
 {
-	private class State
+	private static class State
 	{
 		public int x;
 		public int y;
 		public State parent;
 		public int mostRecentDirection;
+		public boolean visited = false;
 
 		public State()
 		{
-			
+		}
+
+		public State(int x, int y)
+		{
+			this.x = x;
+			this.y = y;
 		}
 
 		public State(int x, int y, State parent, int mostRecentDirection)
@@ -22,6 +28,12 @@ public class Maze470_multipath
 			this.y = y;
 			this.parent = parent;
 			this.mostRecentDirection = mostRecentDirection;
+		}
+
+		@Override
+		public String toString() 
+		{
+			return this.x + ":" + this.y;
 		}
 	}
 
@@ -42,6 +54,7 @@ public class Maze470_multipath
 	static boolean[][] crumbs;
 
 	public static Stack<State> dfsStack;
+	public static HashMap<String, Boolean> dfsVisited;
 
 	public static void main(String[] args)
 	{
@@ -88,7 +101,9 @@ public class Maze470_multipath
 		    new Thread(new Runnable(){
 			    public void run() {
 					// doMazeRandomWalk();
-					doMazeGuided(new int[]{RIGHT, RIGHT, DOWN, DOWN, LEFT, DOWN});
+					State finalState = doDfs();
+					int[] directions = getDfsDirections(finalState);
+					doMazeGuided(directions);
 			    }
 		    }).start();
         }
@@ -311,13 +326,91 @@ public class Maze470_multipath
 		System.out.println("Done: doMazeGuided!");
 	}
 
-	public static int[] getDfsDirections()
+	public static State doDfs()
 	{
-		dfsStack = new Stack<State>();
+		dfsStack = new Stack<>();
+		dfsVisited = new HashMap<>();
 
-		initialState = new State();
+		State initialState = new State(robotX, robotY);
 
-		return new int[]{LEFT};
+		dfsStack.push(initialState);
+
+		while(!dfsStack.isEmpty())
+		{
+			State currentState = dfsStack.peek();
+			currentState.visited = true;
+			dfsVisited.put(currentState.toString(), true);
+
+			dfsStack.pop();
+
+			Set<State> childStates = getDfsChildStates(currentState);
+
+			for (State childState : childStates)
+			{
+				if (!dfsVisited.containsKey(childState.toString())) {
+					// If destination has been reached
+					if (childState.x == (MWIDTH-1) && childState.y == (MHEIGHT-1))
+					{
+						return childState;
+					}
+					else
+					{
+						dfsStack.push(childState);
+					}
+				}
+			}
+		}
+
+		return null;
+	}
+
+	public static int[] getDfsDirections(State state)
+	{
+		State currentState = state;
+		ArrayList<Integer> directions = new ArrayList<>();
+
+		while (currentState.parent != null)
+		{
+			directions.add(currentState.mostRecentDirection);
+			currentState = currentState.parent;
+		}
+
+		return directions.stream().mapToInt(Integer::intValue).toArray();
+	}
+
+	public static Set<State> getDfsChildStates(State parentState)
+	{
+		Set<State> result = new HashSet<State>();
+
+		// TOP
+		if ((maze[parentState.x][parentState.y]&UP)==0)
+		{
+			State newState = new State(parentState.x, parentState.y - 1, parentState, UP);
+			result.add(newState);
+		}
+
+		// BOTTOM
+		if ((maze[parentState.x][parentState.y]&DOWN)==0)
+		{
+			State newState = new State(parentState.x, parentState.y + 1, parentState, DOWN);
+			result.add(newState);
+		}
+
+		// LEFT
+		if ((maze[parentState.x][parentState.y]&LEFT)==0)
+		{
+			State newState = new State(parentState.x - 1, parentState.y, parentState, LEFT);
+			result.add(newState);
+		}
+
+		// RIGHT
+		if ((maze[parentState.x][parentState.y]&RIGHT)==0)
+		{
+			State newState = new State(parentState.x + 1, parentState.y, parentState, RIGHT);
+			result.add(newState);
+		}
+
+		return result;
 	}
 
 	public static class MazeComponent extends JComponent
