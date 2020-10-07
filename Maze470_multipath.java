@@ -11,6 +11,11 @@ public class Maze470_multipath
 		public State parent;
 		public int mostRecentDirection;
 
+		public State()
+		{
+			
+		}
+
 		public State(int x, int y, State parent, int mostRecentDirection)
 		{
 			this.x = x;
@@ -308,7 +313,11 @@ public class Maze470_multipath
 
 	public static int[] getDfsDirections()
 	{
+		dfsStack = new Stack<State>();
 
+		initialState = new State();
+
+		return new int[]{LEFT};
 	}
 
 	public static class MazeComponent extends JComponent
