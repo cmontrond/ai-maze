@@ -13,11 +13,15 @@ public class Maze470_multipath
 		public static long count = 0;
 		public String key;
 
+		public State()
+		{
+
+		}
+
 		public State(int x, int y)
 		{
 			this.x = x;
 			this.y = y;
-			this.id = this.count+1;
 			this.key = this.x + ":" + this.y;
 		}
 
@@ -333,7 +337,6 @@ public class Maze470_multipath
 		while(!dfsStack.isEmpty())
 		{
 			State currentState = dfsStack.peek();
-			currentState.visited = true;
 			dfsVisited.put(currentState.key, true);
 
 			dfsStack.pop();
@@ -357,6 +360,11 @@ public class Maze470_multipath
 		}
 
 		return null;
+	}
+
+	public static State doAStar()
+	{
+		return new State();
 	}
 
 	public static int[] getDfsDirections(State state)
