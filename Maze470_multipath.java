@@ -10,16 +10,15 @@ public class Maze470_multipath
 		public int y;
 		public State parent;
 		public int mostRecentDirection;
-		public boolean visited = false;
-
-		public State()
-		{
-		}
+		public static long count = 0;
+		public String key;
 
 		public State(int x, int y)
 		{
 			this.x = x;
 			this.y = y;
+			this.id = this.count+1;
+			this.key = this.x + ":" + this.y;
 		}
 
 		public State(int x, int y, State parent, int mostRecentDirection)
@@ -28,12 +27,7 @@ public class Maze470_multipath
 			this.y = y;
 			this.parent = parent;
 			this.mostRecentDirection = mostRecentDirection;
-		}
-
-		@Override
-		public String toString() 
-		{
-			return this.x + ":" + this.y;
+			this.key = this.x + ":" + this.y;
 		}
 	}
 
@@ -103,6 +97,7 @@ public class Maze470_multipath
 					// doMazeRandomWalk();
 					State finalState = doDfs();
 					int[] directions = getDfsDirections(finalState);
+					directions = reverseArray(directions, directions.length);
 					doMazeGuided(directions);
 			    }
 		    }).start();
@@ -339,7 +334,7 @@ public class Maze470_multipath
 		{
 			State currentState = dfsStack.peek();
 			currentState.visited = true;
-			dfsVisited.put(currentState.toString(), true);
+			dfsVisited.put(currentState.key, true);
 
 			dfsStack.pop();
 
@@ -347,7 +342,7 @@ public class Maze470_multipath
 
 			for (State childState : childStates)
 			{
-				if (!dfsVisited.containsKey(childState.toString())) {
+				if (!dfsVisited.containsKey(childState.key)) {
 					// If destination has been reached
 					if (childState.x == (MWIDTH-1) && childState.y == (MHEIGHT-1))
 					{
@@ -377,6 +372,18 @@ public class Maze470_multipath
 
 		return directions.stream().mapToInt(Integer::intValue).toArray();
 	}
+
+	public static int[] reverseArray(int[] intArray, int size) 
+    { 
+        int i, temp; 
+        for (i = 0; i < size / 2; i++) { 
+            temp = intArray[i]; 
+            intArray[i] = intArray[size - i - 1]; 
+            intArray[size - i - 1] = temp; 
+		}
+		
+		return intArray;
+    } 
 
 	public static Set<State> getDfsChildStates(State parentState)
 	{
