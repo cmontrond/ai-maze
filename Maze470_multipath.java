@@ -54,6 +54,9 @@ public class Maze470_multipath
 	public static Stack<State> dfsStack;
 	public static HashMap<String, Boolean> dfsVisited;
 
+	public static Queue<State> aStarQueue;
+	public static HashMap<String, Boolean> aStarVisited;
+
 	public static void main(String[] args)
 	{
 		//maze a maze array and a crumb array
