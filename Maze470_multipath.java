@@ -335,7 +335,7 @@ public class Maze470_multipath
 			try{ Thread.sleep(SPEED); } catch(Exception e) { }
 		}
 
-		System.out.println("Done: doMazeGuided!");
+		System.out.println("Number of crumbs: " + getCrumbsCount());
 	}
 
 	public static State doDfs()
@@ -525,6 +525,21 @@ public class Maze470_multipath
 		}
 
 		return result;
+	}
+
+	public static Long getCrumbsCount()
+	{
+		long count = 0;
+
+		for (int i = 0; i < MWIDTH; i++) {
+			for (int j = 0; j < MHEIGHT; j++) {
+				if (crumbs[i][j] == true) {
+					count++;
+				}
+			}
+		}
+
+		return count;
 	}
 
 	public static class MazeComponent extends JComponent
