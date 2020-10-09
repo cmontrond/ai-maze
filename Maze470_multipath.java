@@ -1,6 +1,7 @@
 import java.awt.*;
 import javax.swing.*;
 import java.util.*;
+import java.lang.Math;
 
 public class Maze470_multipath
 {
@@ -10,6 +11,9 @@ public class Maze470_multipath
 		public int y;
 		public State parent;
 		public int mostRecentDirection;
+		public long distanceToRootState = 0; // distance between the current node and the start node
+		public long heuristic = 0; // Manhattan distance from the exit.
+		public long totalCost = 0; // total cost of the state
 		public String key;
 
 		public State()
@@ -22,6 +26,9 @@ public class Maze470_multipath
 			this.x = x;
 			this.y = y;
 			this.key = this.x + ":" + this.y;
+			this.distanceToRootState = distanceToRootState(this);
+			this.heuristic = calculateHeuristic(this);
+			this.totalCost = distanceToRootState + heuristic;
 		}
 
 		public State(int x, int y, State parent, int mostRecentDirection)
@@ -31,6 +38,9 @@ public class Maze470_multipath
 			this.parent = parent;
 			this.mostRecentDirection = mostRecentDirection;
 			this.key = this.x + ":" + this.y;
+			this.distanceToRootState = distanceToRootState(this);
+			this.heuristic = calculateHeuristic(this);
+			this.totalCost = distanceToRootState + heuristic;
 		}
 	}
 
@@ -101,8 +111,9 @@ public class Maze470_multipath
 		    new Thread(new Runnable(){
 			    public void run() {
 					// doMazeRandomWalk();
-					State finalState = doDfs();
-					int[] directions = getDfsDirections(finalState);
+					// State finalState = doDfs();
+					State finalState = doAStar();
+					int[] directions = getDirections(finalState);
 					directions = reverseArray(directions, directions.length);
 					doMazeGuided(directions);
 			    }
@@ -343,7 +354,7 @@ public class Maze470_multipath
 
 			dfsStack.pop();
 
-			Set<State> childStates = getDfsChildStates(currentState);
+			Set<State> childStates = getChildStates(currentState);
 
 			for (State childState : childStates)
 			{
@@ -367,18 +378,95 @@ public class Maze470_multipath
 	public static State doAStar()
 	{
 		aStarQueue = new LinkedList<>();
-		dfsVisited = new HashMap<>();
+		aStarVisited = new HashMap<>();
 
 		State initialState = new State(robotX, robotY);
 
 		aStarQueue.add(initialState);
 
+		while (!aStarQueue.isEmpty())
+		{
+			State chosenState = getChosenState(aStarQueue, initialState);
+			aStarVisited.put(chosenState.key, true);
+			
+			if (chosenState.x == (MWIDTH-1) && chosenState.y == (MHEIGHT-1))
+			{
+				return chosenState;
+			}
 
+			Set<State> childStates = getChildStates(chosenState);
 
-		return new State();
+			for (State childState : childStates)
+			{
+				if (!aStarVisited.containsKey(childState.key)) {
+					
+					long temp = childState.distanceToRootState + distanceToparentState(chosenState, childState) + childState.heuristic;
+
+					if (temp < childState.totalCost) {
+						childState.totalCost = temp;
+					}
+
+					aStarQueue.add(childState);
+				}
+			}
+
+		}
+
+		return null;
 	}
 
-	public static int[] getDfsDirections(State state)
+	public static State getChosenState(Queue<State> queue, State initialState)
+	{
+		long minDistance = initialState.totalCost;
+
+		State chosenState = null;
+
+		for (State state : queue)
+		{
+			if (!aStarVisited.containsKey(state.key)) {
+				if (state.totalCost == initialState.totalCost) {
+					chosenState = state;
+				}
+				else if (state.totalCost < minDistance) {
+					minDistance = state.totalCost;
+					chosenState = state;
+				}
+			}
+		}
+
+		return chosenState;
+	}
+
+	public static Long distanceToRootState(State currentState)
+	{
+		long count = 0;
+
+		while (currentState.parent != null) {
+			count++;
+			currentState = currentState.parent;
+		}
+
+		return count;
+	}
+
+	public static Long distanceToparentState(State parentState, State currentState)
+	{
+		long count = 0;
+
+		while (currentState.key != parentState.key) {
+			count++;
+			currentState = currentState.parent;
+		}
+
+		return count;
+	}
+
+	public static Long calculateHeuristic(State state)
+	{
+		return (long) (Math.pow((state.x - (MWIDTH-1)), 2) + (Math.pow((state.y - (MHEIGHT-1)), 2)));
+	}
+
+	public static int[] getDirections(State state)
 	{
 		State currentState = state;
 		ArrayList<Integer> directions = new ArrayList<>();
@@ -404,7 +492,7 @@ public class Maze470_multipath
 		return intArray;
     } 
 
-	public static Set<State> getDfsChildStates(State parentState)
+	public static Set<State> getChildStates(State parentState)
 	{
 		Set<State> result = new HashSet<State>();
 
