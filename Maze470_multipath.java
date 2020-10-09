@@ -10,7 +10,6 @@ public class Maze470_multipath
 		public int y;
 		public State parent;
 		public int mostRecentDirection;
-		public static long count = 0;
 		public String key;
 
 		public State()
@@ -367,6 +366,15 @@ public class Maze470_multipath
 
 	public static State doAStar()
 	{
+		aStarQueue = new LinkedList<>();
+		dfsVisited = new HashMap<>();
+
+		State initialState = new State(robotX, robotY);
+
+		aStarQueue.add(initialState);
+
+
+
 		return new State();
 	}
 
