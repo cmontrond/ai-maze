@@ -41,8 +41,8 @@ java Maze470_multipath
 Choosing an Algorithm:
 
 ```
-By default, DFS is chosen.<br>
-To run the A* version instead, comment line #114 and uncomment line #115
+By default, DFS is chosen.
+To run the A* version instead, comment line #114 and uncomment line #115.
 ```
 
 ## Built With
