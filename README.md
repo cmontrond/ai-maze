@@ -38,6 +38,13 @@ Run the project:
 java Maze470_multipath
 ```
 
+Choosing an Algorithm:
+
+```
+By default, DFS is chosen.<br>
+To run the A* version instead, comment line #114 and uncomment line #115
+```
+
 ## Built With
 
 * [Java](https://www.oracle.com/java/technologies/javase-downloads.html) - The Programming Language

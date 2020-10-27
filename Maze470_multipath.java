@@ -111,8 +111,8 @@ public class Maze470_multipath
 		    new Thread(new Runnable(){
 			    public void run() {
 					// doMazeRandomWalk();
-					// State finalState = doDfs();
-					State finalState = doAStar();
+					State finalState = doDfs();
+					// State finalState = doAStar();
 					int[] directions = getDirections(finalState);
 					directions = reverseArray(directions, directions.length);
 					doMazeGuided(directions);
